@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-ios</TargetFramework>
+    <SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <AssemblyName>ZarasBasement</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="..\ZarasBasement.Core\Content\ZarasBasement.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZarasBasement.Core\ZarasBasement.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
+    <PackageReference Include="MonoGame.Framework.iOS" Version="3.8.*" />
+  </ItemGroup>
+</Project>

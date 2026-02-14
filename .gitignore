@@ -1,0 +1,113 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]uild/
+[Oo]ut/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+NuGet.config
+
+# .NET
+*.lock.json
+project.lock.json
+*.dll
+*.exe
+*.pdb
+*.mdb
+
+# MonoGame Content Builder
+*.mgcb.bak
+Content/bin/
+Content/obj/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+*.lnk
+Desktop.ini
+
+# Android
+*.apk
+*.aab
+*.dex
+*.class
+*.aar
+local.properties
+*.keystore
+*.jks
+
+# iOS
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# User-specific
+*.rsuser
+*.userprefs
+*.testsettings
+
+# Logs
+*.log
+logs/
+
+# Test Results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NCrunch
+*.ncrunchsolution
+*.ncrunchproject
+
+# Chutzpah Test files
+_Chutzpah*
+
+# Backup files
+*~
+*.bak
+*.tmp
+*.temp
+*.swp
+
+# dotnet tools
+.config/
+!.config/dotnet-tools.json

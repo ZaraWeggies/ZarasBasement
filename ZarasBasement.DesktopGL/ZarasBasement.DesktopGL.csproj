@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <TieredCompilation>false</TieredCompilation>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>../ZarasBasement.Core/Content/Icon.ico</ApplicationIcon>
+    <AssemblyName>ZarasBasement</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <MonoGameContentReference Include="..\ZarasBasement.Core\Content\ZarasBasement.mgcb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ZarasBasement.Core\ZarasBasement.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.*" />
+    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.*" />
+  </ItemGroup>
+</Project>
