@@ -5,8 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Zara_s_Basement.Core.Games;
 using Zara_s_Basement.Core.Input;
-using Zara_s_Basement.Core.Screens;
-using Zara_s_Basement.Core.Services;
+using Zara_s_Basement.Core.Screens;using Zara_s_Basement.Core.UI;using Zara_s_Basement.Core.Services;
 
 namespace Zara_s_Basement.Core.Hub;
 
@@ -83,26 +82,87 @@ public class HubScreen : Screen
     {
         _stations.Clear();
         
-        // Get viewport for positioning
         var viewport = GraphicsDevice!.Viewport;
+        LayoutHelper.Update(viewport);
+        
+        var gameIds = new List<string>(GameRegistry.GameIds);
+        
+        // If no games registered, add a placeholder
+        if (gameIds.Count == 0)
+        {
+            int centerX = viewport.Width / 2;
+            int floorY = (int)(viewport.Height * 0.7f);
+            _stations.Add(new Station
+            {
+                GameId = "placeholder",
+                Type = StationType.ArcadeCabinet,
+                Bounds = new Rectangle(centerX - 100, floorY - 350, 200, 350)
+            });
+            return;
+        }
+        
+        if (LayoutHelper.IsPortrait)
+        {
+            CreatePortraitLayout(gameIds, viewport);
+        }
+        else
+        {
+            CreateLandscapeLayout(gameIds, viewport);
+        }
+    }
+    
+    private void CreatePortraitLayout(List<string> gameIds, Viewport viewport)
+    {
+        // Portrait: smaller stations in a 2-column grid
+        int columns = 2;
+        int margin = 20;
+        int spacing = 15;
+        int stationWidth = (viewport.Width - margin * 2 - spacing) / columns;
+        int stationHeight = (int)(stationWidth * 1.5f);
+        int startY = 70; // Below title
+        int startX = margin;
+        
+        for (int i = 0; i < gameIds.Count; i++)
+        {
+            int col = i % columns;
+            int row = i / columns;
+            
+            int x = startX + col * (stationWidth + spacing);
+            int y = startY + row * (stationHeight + spacing);
+            
+            int typeIndex = i % 3;
+            var stationType = typeIndex switch
+            {
+                0 => StationType.ArcadeCabinet,
+                1 => StationType.Computer,
+                _ => StationType.Poster
+            };
+            
+            _stations.Add(new Station
+            {
+                GameId = gameIds[i],
+                Type = stationType,
+                Bounds = new Rectangle(x, y, stationWidth, stationHeight)
+            });
+        }
+    }
+    
+    private void CreateLandscapeLayout(List<string> gameIds, Viewport viewport)
+    {
+        // Landscape: original horizontal layout
         int centerX = viewport.Width / 2;
         int floorY = (int)(viewport.Height * 0.7f);
-        
-        // Create a station for each registered game
         int stationWidth = 200;
         int stationHeight = 350;
         int spacing = 30;
         
-        var gameIds = new List<string>(GameRegistry.GameIds);
         int totalWidth = gameIds.Count * stationWidth + (gameIds.Count - 1) * spacing;
         int startX = centerX - totalWidth / 2;
         
         for (int i = 0; i < gameIds.Count; i++)
         {
             var gameId = gameIds[i];
-            var info = GameRegistry.GetInfo(gameId);
             
-            // Alternate station types for variety
             int typeIndex = i % 3;
             var stationType = typeIndex switch
             {
@@ -128,17 +188,6 @@ public class HubScreen : Screen
                 )
             });
         }
-        
-        // If no games registered, add a placeholder
-        if (_stations.Count == 0)
-        {
-            _stations.Add(new Station
-            {
-                GameId = "placeholder",
-                Type = StationType.ArcadeCabinet,
-                Bounds = new Rectangle(centerX - 50, floorY - stationHeight, stationWidth, stationHeight)
-            });
-        }
     }
 
     public override void OnEnter()
@@ -147,6 +196,11 @@ public class HubScreen : Screen
         // Force station recreation on next draw
         _lastViewportWidth = 0;
         _lastViewportHeight = 0;
+    }
+    
+    public override void OnViewportChanged(int width, int height)
+    {
+        // Stations will be recreated automatically in Draw
     }
 
     public override void Update(GameTime gameTime)
@@ -205,7 +259,10 @@ public class HubScreen : Screen
             CreateStations();
         }
         
-        int floorY = (int)(viewport.Height * 0.7f);
+        // In portrait mode, push floor down; in landscape, show basement floor at 70%
+        int floorY = LayoutHelper.IsPortrait 
+            ? (int)(viewport.Height * 0.92f)  // Near bottom in portrait
+            : (int)(viewport.Height * 0.7f);  // Traditional basement floor
         
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
         

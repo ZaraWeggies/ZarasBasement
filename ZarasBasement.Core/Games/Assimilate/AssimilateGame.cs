@@ -42,6 +42,8 @@ public class AssimilateGame : Screen, IMinigame
     // Layout
     private Rectangle _boardRect;
     private int _cellSize;
+    private int _lastViewportWidth;
+    private int _lastViewportHeight;
     
     // Animation
     private float _winAnimProgress;
@@ -100,19 +102,60 @@ public class AssimilateGame : Screen, IMinigame
         SetupLayout();
         SetupUI();
     }
+    
+    public override void OnViewportChanged(int width, int height)
+    {
+        // Layout and UI will be recreated in Update
+    }
 
     private void SetupLayout()
     {
         var viewport = GraphicsDevice!.Viewport;
+        LayoutHelper.Update(viewport);
         
-        // Calculate cell size to fit the board nicely
-        int maxBoardWidth = viewport.Width - 200; // Leave room for UI
-        int maxBoardHeight = viewport.Height - 100; // Leave room for header/footer
+        if (LayoutHelper.IsPortrait)
+        {
+            SetupPortraitLayout(viewport);
+        }
+        else
+        {
+            SetupLandscapeLayout(viewport);
+        }
+    }
+    
+    private void SetupPortraitLayout(Viewport viewport)
+    {
+        // Portrait: board takes most width, controls below
+        int margin = 15;
+        int headerHeight = 60;
+        int controlAreaHeight = 120;
+        
+        int availableWidth = viewport.Width - margin * 2;
+        int availableHeight = viewport.Height - headerHeight - controlAreaHeight - margin;
+        
+        _cellSize = Math.Min(availableWidth / BoardWidth, availableHeight / BoardHeight);
+        _cellSize = Math.Max(_cellSize, 12); // Minimum size
+        
+        int boardPixelWidth = BoardWidth * _cellSize;
+        int boardPixelHeight = BoardHeight * _cellSize;
+        
+        _boardRect = new Rectangle(
+            (viewport.Width - boardPixelWidth) / 2,
+            headerHeight,
+            boardPixelWidth,
+            boardPixelHeight
+        );
+    }
+    
+    private void SetupLandscapeLayout(Viewport viewport)
+    {
+        // Landscape: original layout
+        int maxBoardWidth = viewport.Width - 200;
+        int maxBoardHeight = viewport.Height - 100;
         
         _cellSize = Math.Min(maxBoardWidth / BoardWidth, maxBoardHeight / BoardHeight);
-        _cellSize = Math.Min(_cellSize, 32); // Cap at 32px
+        _cellSize = Math.Min(_cellSize, 32);
         
-        // Center the board
         int boardPixelWidth = BoardWidth * _cellSize;
         int boardPixelHeight = BoardHeight * _cellSize;
         
@@ -133,13 +176,13 @@ public class AssimilateGame : Screen, IMinigame
         _quitButton.SetScreenBounds(new Rectangle(0, 0, viewport.Width, viewport.Height));
         _quitButton.QuitRequested += () => RequestQuit?.Invoke();
         
-        // Color buttons
+        // Color buttons - larger on mobile/portrait
         _colorButtons.Clear();
-        int buttonSize = 40;
-        int buttonSpacing = 10;
+        int buttonSize = LayoutHelper.IsPortrait ? 50 : 40;
+        int buttonSpacing = LayoutHelper.IsPortrait ? 8 : 10;
         int totalButtonWidth = ColorCount * buttonSize + (ColorCount - 1) * buttonSpacing;
         int buttonStartX = (viewport.Width - totalButtonWidth) / 2;
-        int buttonY = _boardRect.Bottom + 20;
+        int buttonY = _boardRect.Bottom + 15;
         
         for (int i = 0; i < ColorCount; i++)
         {
@@ -160,13 +203,15 @@ public class AssimilateGame : Screen, IMinigame
         }
         
         // Restart button
+        int restartWidth = LayoutHelper.IsPortrait ? 140 : 120;
+        int restartHeight = LayoutHelper.IsPortrait ? 40 : 30;
         _restartButton = new Button
         {
             Bounds = new Rectangle(
-                viewport.Width / 2 - 60,
-                buttonY + buttonSize + 20,
-                120,
-                30
+                viewport.Width / 2 - restartWidth / 2,
+                buttonY + buttonSize + 15,
+                restartWidth,
+                restartHeight
             ),
             Text = "NEW GAME"
         };
@@ -232,6 +277,19 @@ public class AssimilateGame : Screen, IMinigame
     public override void Update(GameTime gameTime)
     {
         InputHelper.Update();
+        
+        // Check for viewport changes
+        if (GraphicsDevice != null)
+        {
+            var vp = GraphicsDevice.Viewport;
+            if (vp.Width != _lastViewportWidth || vp.Height != _lastViewportHeight)
+            {
+                _lastViewportWidth = vp.Width;
+                _lastViewportHeight = vp.Height;
+                SetupLayout();
+                SetupUI();
+            }
+        }
         
         float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
         

@@ -56,4 +56,9 @@ public interface IScreen
     /// </summary>
     /// <param name="spriteBatch">SpriteBatch for rendering.</param>
     void Draw(SpriteBatch spriteBatch);
+
+    /// <summary>
+    /// Called when the viewport size changes (e.g., orientation change or window resize).
+    /// </summary>
+    void OnViewportChanged(int width, int height);
 }

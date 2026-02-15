@@ -52,7 +52,19 @@ namespace Zara_s_Basement.Core
             Content.RootDirectory = "Content";
 
             // Configure screen orientations.
-            graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            if (IsMobile)
+            {
+                graphicsDeviceManager.SupportedOrientations = 
+                    DisplayOrientation.Portrait | 
+                    DisplayOrientation.LandscapeLeft | 
+                    DisplayOrientation.LandscapeRight;
+            }
+            else
+            {
+                graphicsDeviceManager.SupportedOrientations = 
+                    DisplayOrientation.LandscapeLeft | 
+                    DisplayOrientation.LandscapeRight;
+            }
         }
 
         /// <summary>
