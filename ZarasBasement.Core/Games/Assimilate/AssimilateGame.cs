@@ -596,9 +596,9 @@ public class AssimilateGame : Screen, IMinigame
         
         var currentColor = Board.Colors[_board.CurrentColor];
         var glowColor = new Color(
-            (int)(currentColor.R * 0.3f),
-            (int)(currentColor.G * 0.3f),
-            (int)(currentColor.B * 0.3f)
+            (int)(currentColor.R * 0.42f),
+            (int)(currentColor.G * 0.42f),
+            (int)(currentColor.B * 0.42f)
         );
         bool isDisabled = _state == GameState.Lost;
         
@@ -614,7 +614,7 @@ public class AssimilateGame : Screen, IMinigame
                 DrawFilledCircle(spriteBatch, 
                     bounds.X - glow, bounds.Y - glow,
                     bounds.Width + glow * 2, bounds.Height + glow * 2,
-                    glowColor * 0.4f);
+                    glowColor * 0.52f);
             }
             
             // Draw circular button

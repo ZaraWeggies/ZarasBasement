@@ -143,6 +143,58 @@ namespace ZarasBasement.Core
             };
             GameRegistry.Register(assimilateInfo, () => new AssimilateGame());
             
+            // FAKE
+            // var fakeInfo = new GameInfo
+            // {
+            //     Id = "fake",
+            //     Title = "Fake Game",
+            //     Description = "This is a fake game for testing purposes.",
+            //     ThumbnailPath = "Games/Assimilate/thumbnail",
+            //     Difficulty = 2,
+            //     EstimatedMinutes = 3,
+            //     Tags = new[] { "Puzzle", "Strategy" }
+            // };
+            // GameRegistry.Register(fakeInfo, () => new AssimilateGame());
+            
+            // // FAKE
+            // var fake2Info = new GameInfo
+            // {
+            //     Id = "fake2",
+            //     Title = "Fake Game 2",
+            //     Description = "This is another fake game for testing purposes.",
+            //     ThumbnailPath = "Games/Assimilate/thumbnail",
+            //     Difficulty = 5,
+            //     EstimatedMinutes = 30,
+            //     Tags = new[] { "Puzzle", "Strategy" }
+            // };
+            // GameRegistry.Register(fake2Info, () => new AssimilateGame());
+            
+            // // FAKE
+            // var fake3Info = new GameInfo
+            // {
+            //     Id = "fake3",
+            //     Title = "Fake Game 3",
+            //     Description = "This is another fake game for testing purposes.",
+            //     ThumbnailPath = "Games/Assimilate/thumbnail",
+            //     Difficulty = 2,
+            //     EstimatedMinutes = 3,
+            //     Tags = new[] { "Puzzle", "Strategy" }
+            // };
+            // GameRegistry.Register(fake3Info, () => new AssimilateGame());
+            
+            // // FAKE
+            // var fake4Info = new GameInfo
+            // {
+            //     Id = "fake4",
+            //     Title = "Fake Game 4",
+            //     Description = "This is another fake game for testing purposes.",
+            //     ThumbnailPath = "Games/Assimilate/thumbnail",
+            //     Difficulty = 5,
+            //     EstimatedMinutes = 30,
+            //     Tags = new[] { "Puzzle", "Strategy" }
+            // };
+            // GameRegistry.Register(fake4Info, () => new AssimilateGame());
+            
             // TODO: Register more games here as they're added
         }
 

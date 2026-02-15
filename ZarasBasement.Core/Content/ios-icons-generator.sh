@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Declare a constant variables
-readonly top_level_path="../../Zara_s_Basement.iOS/AppIcon.xcassets"
+readonly top_level_path="../../ZarasBasement.iOS/AppIcon.xcassets"
 readonly xcassets_path="$top_level_path/AppIcon.appiconset"
 
 while true; do

@@ -87,7 +87,7 @@ ZarasBasement/
 
 1. Create a folder in `ZarasBasement.Core/Games/YourGame/`
 2. Implement the `IMinigame` interface
-3. Register in `Zara's BasementGame.cs`:
+3. Register in `ZarasBasementGame.cs`:
 
 ```csharp
 var info = new GameInfo

@@ -96,11 +96,22 @@ public class Station
         int screenMargin = 8;
         var screenRect = new Rectangle(
             Bounds.X + screenMargin,
-            Bounds.Y + screenMargin,
+            Bounds.Y + screenMargin + 26,
             Bounds.Width - screenMargin * 2,
             (int)(Bounds.Height * 0.6f)
         );
         spriteBatch.Draw(pixel, screenRect, new Color(20, 30, 20));
+
+        // Game title above screen
+        int titleHeight = 20;
+        if (info != null)
+        {
+            var titleSize = font.MeasureString(info.Title);
+            var titleX = screenRect.X + (screenRect.Width - titleSize.X) / 2;
+            var titlePos = new Vector2(titleX, Bounds.Y + screenMargin);
+            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black);
+            spriteBatch.DrawString(font, info.Title, titlePos, Color.LimeGreen);
+        }
 
         // Draw thumbnail if available
         if (thumbnail != null)
@@ -115,23 +126,21 @@ public class Station
             );
             spriteBatch.Draw(thumbnail, thumbRect, Color.White);
         }
-
-        // Game title below screen (caption style)
-        int titleHeight = 20;
-        if (info != null)
-        {
-            var titleSize = font.MeasureString(info.Title);
-            var titleX = screenRect.X + (screenRect.Width - titleSize.X) / 2;
-            var titlePos = new Vector2(titleX, screenRect.Bottom + 4);
-            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black);
-            spriteBatch.DrawString(font, info.Title, titlePos, Color.LimeGreen);
-        }
+        
 
         // High score below title
         if (stats != null && stats.HighScore > 0)
         {
-            var scorePos = new Vector2(screenRect.X + 4, screenRect.Bottom + titleHeight + 4);
-            spriteBatch.DrawString(font, $"HI: {stats.HighScore}", scorePos, Color.Yellow);
+            var scoreTitleSize = font.MeasureString($"High Score");
+            var scoreTitleX = screenRect.X + (screenRect.Width - scoreTitleSize.X) / 2;
+            var scoreTitlePos = new Vector2(scoreTitleX, screenRect.Bottom + 10);
+
+            var scoreSize = font.MeasureString($"{stats.HighScore}");
+            var scoreX = screenRect.X + (screenRect.Width - scoreSize.X) / 2;
+            var scorePos = new Vector2(scoreX, screenRect.Bottom + 20 + scoreTitleSize.Y);
+
+            spriteBatch.DrawString(font, $"High Score", scoreTitlePos, Color.Yellow);
+            spriteBatch.DrawString(font, $"{stats.HighScore}", scorePos, Color.White);
         }
 
         // Control panel area (below title and score)
@@ -141,7 +150,7 @@ public class Station
             Bounds.Width - screenMargin * 2,
             Bounds.Height - screenRect.Height - screenMargin - titleHeight - 24
         );
-        spriteBatch.Draw(pixel, panelRect, new Color(40, 40, 50));
+        //spriteBatch.Draw(pixel, panelRect, new Color(40, 40, 50));
 
         // Hover indicator
         if (HoverProgress > 0.1f)
@@ -163,26 +172,40 @@ public class Station
         spriteBatch.Draw(pixel, Bounds, baseColor);
 
         // Border
-        int border = 2;
+        int border = 4;
         spriteBatch.Draw(pixel, new Rectangle(Bounds.X, Bounds.Y, Bounds.Width, border), Color.SaddleBrown);
         spriteBatch.Draw(pixel, new Rectangle(Bounds.X, Bounds.Bottom - border, Bounds.Width, border), Color.SaddleBrown);
         spriteBatch.Draw(pixel, new Rectangle(Bounds.X, Bounds.Y, border, Bounds.Height), Color.SaddleBrown);
         spriteBatch.Draw(pixel, new Rectangle(Bounds.Right - border, Bounds.Y, border, Bounds.Height), Color.SaddleBrown);
 
-        // Hover indicator (draw before title so title is on top)
+        // Draw thumbnail if available (fills poster area)
+        if (thumbnail != null)
+        {
+            var thumbRect = new Rectangle(
+                Bounds.X + border,
+                Bounds.Y + border,
+                Bounds.Width - border * 2,
+                Bounds.Height - border * 2
+            );
+            spriteBatch.Draw(thumbnail, thumbRect, Color.White);
+        }
+
+        // Hover indicator
         if (HoverProgress > 0.1f)
         {
             var glowColor = Color.Gold * (HoverProgress * 0.4f);
             spriteBatch.Draw(pixel, Bounds, glowColor);
         }
 
-        // Title (always on top)
+        // Title at bottom (always on top)
         if (info != null)
         {
-            var titlePos = new Vector2(Bounds.X + 6, Bounds.Y + 6);
+            var titleSize = font.MeasureString(info.Title);
+            var titleX = Bounds.X + (Bounds.Width - titleSize.X) / 2;
+            var titlePos = new Vector2(titleX, Bounds.Bottom - titleSize.Y - 8);
             // Shadow for better readability
-            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black * 0.5f);
-            spriteBatch.DrawString(font, info.Title, titlePos, Color.Maroon);
+            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black * 0.8f);
+            spriteBatch.DrawString(font, info.Title, titlePos, Color.White);
         }
     }
 
@@ -202,11 +225,27 @@ public class Station
         );
         spriteBatch.Draw(pixel, screenRect, new Color(0, 0, 40));
 
-        // Title
+        // Draw thumbnail if available
+        if (thumbnail != null)
+        {
+            int padding = 4;
+            var thumbRect = new Rectangle(
+                screenRect.X + padding,
+                screenRect.Y + padding,
+                screenRect.Width - padding * 2,
+                screenRect.Height - padding * 2
+            );
+            spriteBatch.Draw(thumbnail, thumbRect, Color.White);
+        }
+
+        // Title below thumbnail (or at top if no thumbnail)
         if (info != null)
         {
-            var titlePos = new Vector2(screenRect.X + 4, screenRect.Y + 4);
-            spriteBatch.DrawString(font, info.Title, titlePos, Color.White);
+            var titleSize = font.MeasureString(info.Title);
+            var titleX = screenRect.X + (screenRect.Width - titleSize.X) / 2;
+            var titlePos = new Vector2(titleX, screenRect.Bottom - titleSize.Y - 4);
+            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black * 0.5f);
+            spriteBatch.DrawString(font, info.Title, titlePos, Color.LimeGreen);
         }
 
         // Stand
