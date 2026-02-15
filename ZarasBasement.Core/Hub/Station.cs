@@ -54,7 +54,7 @@ public class Station
         HoverProgress = MathHelper.Lerp(HoverProgress, target, HoverAnimSpeed * delta);
     }
 
-    public void Draw(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont font, GameInfo? info, GameStats? stats)
+    public void Draw(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont font, GameInfo? info, GameStats? stats, Texture2D? thumbnail = null)
     {
         // Draw cabinet/poster base
         Color baseColor = Type switch
@@ -75,19 +75,19 @@ public class Station
         switch (Type)
         {
             case StationType.ArcadeCabinet:
-                DrawArcadeCabinet(spriteBatch, pixel, font, baseColor, info, stats);
+                DrawArcadeCabinet(spriteBatch, pixel, font, baseColor, info, stats, thumbnail);
                 break;
             case StationType.Poster:
-                DrawPoster(spriteBatch, pixel, font, baseColor, info, stats);
+                DrawPoster(spriteBatch, pixel, font, baseColor, info, stats, thumbnail);
                 break;
             case StationType.Computer:
-                DrawComputer(spriteBatch, pixel, font, baseColor, info, stats);
+                DrawComputer(spriteBatch, pixel, font, baseColor, info, stats, thumbnail);
                 break;
         }
     }
 
     private void DrawArcadeCabinet(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont font,
-        Color baseColor, GameInfo? info, GameStats? stats)
+        Color baseColor, GameInfo? info, GameStats? stats, Texture2D? thumbnail)
     {
         // Cabinet body
         spriteBatch.Draw(pixel, Bounds, baseColor);
@@ -102,26 +102,44 @@ public class Station
         );
         spriteBatch.Draw(pixel, screenRect, new Color(20, 30, 20));
 
-        // Game title on screen
-        if (info != null)
+        // Draw thumbnail if available
+        if (thumbnail != null)
         {
-            var titlePos = new Vector2(screenRect.X + 4, screenRect.Y + 4);
-            spriteBatch.DrawString(font, info.Title, titlePos, Color.LimeGreen);
-
-            // High score below title
-            if (stats != null && stats.HighScore > 0)
-            {
-                var scorePos = new Vector2(screenRect.X + 4, screenRect.Y + 20);
-                spriteBatch.DrawString(font, $"HI: {stats.HighScore}", scorePos, Color.Yellow);
-            }
+            // Scale to fit screen area with some padding
+            int padding = 4;
+            var thumbRect = new Rectangle(
+                screenRect.X + padding,
+                screenRect.Y + padding,
+                screenRect.Width - padding * 2,
+                screenRect.Height - padding * 2
+            );
+            spriteBatch.Draw(thumbnail, thumbRect, Color.White);
         }
 
-        // Control panel area
+        // Game title below screen (caption style)
+        int titleHeight = 20;
+        if (info != null)
+        {
+            var titleSize = font.MeasureString(info.Title);
+            var titleX = screenRect.X + (screenRect.Width - titleSize.X) / 2;
+            var titlePos = new Vector2(titleX, screenRect.Bottom + 4);
+            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black);
+            spriteBatch.DrawString(font, info.Title, titlePos, Color.LimeGreen);
+        }
+
+        // High score below title
+        if (stats != null && stats.HighScore > 0)
+        {
+            var scorePos = new Vector2(screenRect.X + 4, screenRect.Bottom + titleHeight + 4);
+            spriteBatch.DrawString(font, $"HI: {stats.HighScore}", scorePos, Color.Yellow);
+        }
+
+        // Control panel area (below title and score)
         var panelRect = new Rectangle(
             Bounds.X + screenMargin,
-            screenRect.Bottom + 4,
+            screenRect.Bottom + titleHeight + 24,
             Bounds.Width - screenMargin * 2,
-            Bounds.Height - screenRect.Height - screenMargin - 8
+            Bounds.Height - screenRect.Height - screenMargin - titleHeight - 24
         );
         spriteBatch.Draw(pixel, panelRect, new Color(40, 40, 50));
 
@@ -139,7 +157,7 @@ public class Station
     }
 
     private void DrawPoster(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont font,
-        Color baseColor, GameInfo? info, GameStats? stats)
+        Color baseColor, GameInfo? info, GameStats? stats, Texture2D? thumbnail)
     {
         // Poster background
         spriteBatch.Draw(pixel, Bounds, baseColor);
@@ -151,23 +169,25 @@ public class Station
         spriteBatch.Draw(pixel, new Rectangle(Bounds.X, Bounds.Y, border, Bounds.Height), Color.SaddleBrown);
         spriteBatch.Draw(pixel, new Rectangle(Bounds.Right - border, Bounds.Y, border, Bounds.Height), Color.SaddleBrown);
 
-        // Title
-        if (info != null)
-        {
-            var titlePos = new Vector2(Bounds.X + 6, Bounds.Y + 6);
-            spriteBatch.DrawString(font, info.Title, titlePos, Color.DarkRed);
-        }
-
-        // Hover indicator
+        // Hover indicator (draw before title so title is on top)
         if (HoverProgress > 0.1f)
         {
             var glowColor = Color.Gold * (HoverProgress * 0.4f);
             spriteBatch.Draw(pixel, Bounds, glowColor);
         }
+
+        // Title (always on top)
+        if (info != null)
+        {
+            var titlePos = new Vector2(Bounds.X + 6, Bounds.Y + 6);
+            // Shadow for better readability
+            spriteBatch.DrawString(font, info.Title, titlePos + new Vector2(1, 1), Color.Black * 0.5f);
+            spriteBatch.DrawString(font, info.Title, titlePos, Color.Maroon);
+        }
     }
 
     private void DrawComputer(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont font,
-        Color baseColor, GameInfo? info, GameStats? stats)
+        Color baseColor, GameInfo? info, GameStats? stats, Texture2D? thumbnail)
     {
         // Monitor
         spriteBatch.Draw(pixel, Bounds, baseColor);

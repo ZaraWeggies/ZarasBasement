@@ -20,9 +20,12 @@ public class HubScreen : Screen
     
     private Texture2D? _pixel;
     private SpriteFont? _font;
+    private readonly Dictionary<string, Texture2D> _thumbnails = new();
     
     private readonly List<Station> _stations = new();
     private Station? _hoveredStation;
+    private int _lastViewportWidth;
+    private int _lastViewportHeight;
     
     // Colors for the basement environment
     private static readonly Color WallColor = new(45, 35, 40);
@@ -50,8 +53,30 @@ public class HubScreen : Screen
         // Load font
         _font = content.Load<SpriteFont>("Fonts/Hud");
         
-        // Create stations for registered games
-        CreateStations();
+        // Load thumbnails for each game
+        LoadThumbnails(content);
+        
+        // Stations will be created in OnEnter when viewport is ready
+    }
+
+    private void LoadThumbnails(ContentManager content)
+    {
+        foreach (var gameId in GameRegistry.GameIds)
+        {
+            var info = GameRegistry.GetInfo(gameId);
+            if (info != null && !string.IsNullOrEmpty(info.ThumbnailPath))
+            {
+                try
+                {
+                    var thumbnail = content.Load<Texture2D>(info.ThumbnailPath);
+                    _thumbnails[gameId] = thumbnail;
+                }
+                catch
+                {
+                    // Thumbnail not found, that's ok
+                }
+            }
+        }
     }
 
     private void CreateStations()
@@ -119,11 +144,9 @@ public class HubScreen : Screen
     public override void OnEnter()
     {
         base.OnEnter();
-        // Refresh stations in case new games were added
-        if (GraphicsDevice != null)
-        {
-            CreateStations();
-        }
+        // Force station recreation on next draw
+        _lastViewportWidth = 0;
+        _lastViewportHeight = 0;
     }
 
     public override void Update(GameTime gameTime)
@@ -173,6 +196,15 @@ public class HubScreen : Screen
         if (_pixel == null || _font == null || GraphicsDevice == null) return;
         
         var viewport = GraphicsDevice.Viewport;
+        
+        // Recreate stations if viewport changed (handles initial load and resize)
+        if (viewport.Width != _lastViewportWidth || viewport.Height != _lastViewportHeight)
+        {
+            _lastViewportWidth = viewport.Width;
+            _lastViewportHeight = viewport.Height;
+            CreateStations();
+        }
+        
         int floorY = (int)(viewport.Height * 0.7f);
         
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
@@ -185,7 +217,8 @@ public class HubScreen : Screen
         {
             var info = GameRegistry.GetInfo(station.GameId);
             var stats = info != null ? _saveManager.LoadStats(station.GameId) : null;
-            station.Draw(spriteBatch, _pixel, _font, info, stats);
+            _thumbnails.TryGetValue(station.GameId, out var thumbnail);
+            station.Draw(spriteBatch, _pixel, _font, info, stats, thumbnail);
         }
         
         // Draw title

@@ -56,7 +56,7 @@ public class AssimilateGame : Screen, IMinigame
         ThumbnailPath = "Games/Assimilate/thumbnail",
         Difficulty = 2,
         EstimatedMinutes = 3,
-        Tags = new[] { "Puzzle", "Strategy", "Classic" }
+        Tags = new[] { "Arcade", "Strategy", "Classic" }
     };
 
     /// <inheritdoc />
