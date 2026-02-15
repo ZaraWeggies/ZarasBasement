@@ -30,16 +30,25 @@ public class Board
     public int ColorCount { get; }
 
     /// <summary>
-    /// Available colors for the game.
+    /// Available colors for the game (matching original HTML5 version).
+    /// Order: Green, Purple, Blue, White, Red, Yellow
     /// </summary>
     public static readonly Color[] Colors = new[]
     {
-        new Color(255, 0, 0),      // Red
-        new Color(102, 204, 0),    // Green
-        new Color(34, 51, 244),    // Blue
-        new Color(255, 204, 0),    // Yellow
-        new Color(187, 119, 255),  // Purple
-        new Color(255, 255, 255),  // White
+        new Color(0x66, 0xCC, 0x00),  // 0: Green   #66CC00
+        new Color(0xBB, 0x77, 0xFF),  // 1: Purple  #BB77FF
+        new Color(0x22, 0x33, 0xF4),  // 2: Blue    #2233F4
+        new Color(0xFF, 0xFF, 0xFF),  // 3: White   #FFFFFF
+        new Color(0xFF, 0x00, 0x00),  // 4: Red     #FF0000
+        new Color(0xFF, 0xCC, 0x00),  // 5: Yellow  #FFCC00
+    };
+
+    /// <summary>
+    /// Color names for hint display.
+    /// </summary>
+    public static readonly string[] ColorNames = new[]
+    {
+        "Green", "Purple", "Blue", "White", "Red", "Yellow"
     };
 
     /// <summary>
@@ -103,7 +112,7 @@ public class Board
     /// <summary>
     /// Get all cells connected to the given cell (same color, orthogonally adjacent).
     /// </summary>
-    private HashSet<(int x, int y)> GetConnectedCells(int startX, int startY)
+    public HashSet<(int x, int y)> GetConnectedCells(int startX, int startY)
     {
         var result = new HashSet<(int x, int y)>();
         var toVisit = new Queue<(int x, int y)>();
@@ -192,5 +201,88 @@ public class Board
     {
         int colorIndex = _cells[x, y];
         return Colors[colorIndex];
+    }
+
+    /// <summary>
+    /// AI hint: find the color that would capture the most adjacent cells.
+    /// Matches the original HTML5 game's findMostTouching algorithm.
+    /// </summary>
+    public int GetBestMove()
+    {
+        int currentColor = _cells[0, 0];
+        var colorCounts = new int[ColorCount];
+        
+        // Get all cells currently in the player's region
+        var connected = GetConnectedCells(0, 0);
+        var counted = new HashSet<(int, int)>(connected);
+        
+        // For each cell adjacent to the connected region, count cells by color
+        foreach (var (cx, cy) in connected)
+        {
+            CountAdjacentGroup(cx - 1, cy, counted, colorCounts);
+            CountAdjacentGroup(cx + 1, cy, counted, colorCounts);
+            CountAdjacentGroup(cx, cy - 1, counted, colorCounts);
+            CountAdjacentGroup(cx, cy + 1, counted, colorCounts);
+        }
+        
+        // Don't suggest current color
+        colorCounts[currentColor] = 0;
+        
+        // Find the color with the most adjacent cells
+        int bestColor = 0;
+        int bestCount = 0;
+        for (int i = 0; i < ColorCount; i++)
+        {
+            if (colorCounts[i] > bestCount)
+            {
+                bestCount = colorCounts[i];
+                bestColor = i;
+            }
+        }
+        
+        return bestColor;
+    }
+
+    private void CountAdjacentGroup(int x, int y, HashSet<(int, int)> counted, int[] colorCounts)
+    {
+        if (x < 0 || x >= _width || y < 0 || y >= _height)
+            return;
+        
+        if (counted.Contains((x, y)))
+            return;
+        
+        // Get the entire group connected to this cell
+        int color = _cells[x, y];
+        var group = GetConnectedCells(x, y);
+        
+        // Add all cells in the group to the count
+        colorCounts[color] += group.Count;
+        
+        // Mark all as counted to avoid double-counting
+        foreach (var cell in group)
+        {
+            counted.Add(cell);
+        }
+    }
+
+    /// <summary>
+    /// Clone the current board state for save/restore.
+    /// </summary>
+    public int[,] CloneCells()
+    {
+        var clone = new int[_width, _height];
+        Array.Copy(_cells, clone, _cells.Length);
+        return clone;
+    }
+
+    /// <summary>
+    /// Restore board state from saved cells.
+    /// </summary>
+    public void RestoreCells(int[,] cells)
+    {
+        if (cells.GetLength(0) == _width && cells.GetLength(1) == _height)
+        {
+            Array.Copy(cells, _cells, _cells.Length);
+        }
     }
 }
