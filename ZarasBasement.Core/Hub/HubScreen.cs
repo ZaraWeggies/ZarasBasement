@@ -237,9 +237,32 @@ public class HubScreen : Screen
         var stats = _saveManager.LoadStats(gameId);
         game.SetStats(stats);
         
+        // Check for saved game state and restore if available
+        if (game.SupportsSaveState && _saveManager.HasSavedGame(gameId))
+        {
+            var savedState = _saveManager.LoadGameStateRaw(gameId);
+            if (savedState.HasValue)
+            {
+                game.RestoreSaveState(savedState.Value);
+            }
+        }
+        
         // Wire up events
-        game.RequestQuit += () => _screenManager.PopScreen();
+        game.RequestQuit += () =>
+        {
+            // Save game state before quitting (if game supports it and is in progress)
+            if (game.SupportsSaveState)
+            {
+                var state = game.GetSaveState();
+                if (state != null)
+                {
+                    _saveManager.SaveGameState(gameId, state);
+                }
+            }
+            _screenManager.PopScreen();
+        };
         game.StatsChanged += updatedStats => _saveManager.SaveStats(updatedStats);
+        game.ClearSaveState += () => _saveManager.ClearGameState(gameId);
         
         // Push game screen
         _screenManager.PushScreen(game);

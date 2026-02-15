@@ -266,23 +266,36 @@ public class Board
     }
 
     /// <summary>
-    /// Clone the current board state for save/restore.
+    /// Clone the current board state for save/restore as jagged array (JSON-serializable).
     /// </summary>
-    public int[,] CloneCells()
+    public int[][] CloneCells()
     {
-        var clone = new int[_width, _height];
-        Array.Copy(_cells, clone, _cells.Length);
+        var clone = new int[_width][];
+        for (int x = 0; x < _width; x++)
+        {
+            clone[x] = new int[_height];
+            for (int y = 0; y < _height; y++)
+            {
+                clone[x][y] = _cells[x, y];
+            }
+        }
         return clone;
     }
 
     /// <summary>
-    /// Restore board state from saved cells.
+    /// Restore board state from saved cells (jagged array).
     /// </summary>
-    public void RestoreCells(int[,] cells)
+    public void RestoreCells(int[][] cells)
     {
-        if (cells.GetLength(0) == _width && cells.GetLength(1) == _height)
+        if (cells != null && cells.Length == _width && cells[0]?.Length == _height)
         {
-            Array.Copy(cells, _cells, _cells.Length);
+            for (int x = 0; x < _width; x++)
+            {
+                for (int y = 0; y < _height; y++)
+                {
+                    _cells[x, y] = cells[x][y];
+                }
+            }
         }
     }
 }

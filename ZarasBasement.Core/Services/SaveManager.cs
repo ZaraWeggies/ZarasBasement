@@ -2,18 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Zara_s_Basement.Core.Games;
 
 namespace Zara_s_Basement.Core.Services;
 
 /// <summary>
-/// Manages saving and loading game statistics.
+/// Manages saving and loading game statistics and game state.
 /// </summary>
 public class SaveManager
 {
     private readonly string _savePath;
     private readonly Dictionary<string, GameStats> _statsCache = new();
+    private readonly Dictionary<string, JsonElement> _gameStateCache = new();
     private SaveData? _saveData;
+    
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
     public SaveManager()
     {
@@ -37,19 +45,28 @@ public class SaveManager
     private void LoadAll()
     {
         _statsCache.Clear();
+        _gameStateCache.Clear();
         
         if (File.Exists(_savePath))
         {
             try
             {
                 string json = File.ReadAllText(_savePath);
-                _saveData = JsonSerializer.Deserialize<SaveData>(json);
+                _saveData = JsonSerializer.Deserialize<SaveData>(json, JsonOptions);
                 
                 if (_saveData?.GameStats != null)
                 {
                     foreach (var stats in _saveData.GameStats)
                     {
                         _statsCache[stats.GameId] = stats;
+                    }
+                }
+                
+                if (_saveData?.GameStates != null)
+                {
+                    foreach (var kvp in _saveData.GameStates)
+                    {
+                        _gameStateCache[kvp.Key] = kvp.Value;
                     }
                 }
             }
@@ -74,10 +91,10 @@ public class SaveManager
         {
             _saveData ??= new SaveData();
             _saveData.GameStats = new List<GameStats>(_statsCache.Values);
+            _saveData.GameStates = new Dictionary<string, JsonElement>(_gameStateCache);
             _saveData.LastSaved = DateTime.UtcNow;
             
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            string json = JsonSerializer.Serialize(_saveData, options);
+            string json = JsonSerializer.Serialize(_saveData, JsonOptions);
             File.WriteAllText(_savePath, json);
         }
         catch (Exception ex)
@@ -110,6 +127,66 @@ public class SaveManager
     }
 
     /// <summary>
+    /// Check if a game has saved state.
+    /// </summary>
+    public bool HasSavedGame(string gameId)
+    {
+        return _gameStateCache.ContainsKey(gameId);
+    }
+
+    /// <summary>
+    /// Save game state for a specific game.
+    /// </summary>
+    public void SaveGameState<T>(string gameId, T state) where T : class
+    {
+        var jsonElement = JsonSerializer.SerializeToElement(state, JsonOptions);
+        _gameStateCache[gameId] = jsonElement;
+        SaveAll();
+    }
+
+    /// <summary>
+    /// Load game state for a specific game.
+    /// </summary>
+    public T? LoadGameState<T>(string gameId) where T : class
+    {
+        if (_gameStateCache.TryGetValue(gameId, out var jsonElement))
+        {
+            try
+            {
+                return jsonElement.Deserialize<T>(JsonOptions);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to deserialize game state for {gameId}: {ex.Message}");
+            }
+        }
+        return null;
+    }
+    
+    /// <summary>
+    /// Load raw game state as JsonElement (for generic interface usage).
+    /// </summary>
+    public JsonElement? LoadGameStateRaw(string gameId)
+    {
+        if (_gameStateCache.TryGetValue(gameId, out var jsonElement))
+        {
+            return jsonElement;
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Clear saved game state (after game completion).
+    /// </summary>
+    public void ClearGameState(string gameId)
+    {
+        if (_gameStateCache.Remove(gameId))
+        {
+            SaveAll();
+        }
+    }
+
+    /// <summary>
     /// Get all saved stats.
     /// </summary>
     public IEnumerable<GameStats> GetAllStats() => _statsCache.Values;
@@ -120,6 +197,7 @@ public class SaveManager
     public void ClearAll()
     {
         _statsCache.Clear();
+        _gameStateCache.Clear();
         _saveData = new SaveData();
         
         if (File.Exists(_savePath))
@@ -137,4 +215,5 @@ internal class SaveData
     public int Version { get; set; } = 1;
     public DateTime LastSaved { get; set; }
     public List<GameStats> GameStats { get; set; } = new();
+    public Dictionary<string, JsonElement> GameStates { get; set; } = new();
 }

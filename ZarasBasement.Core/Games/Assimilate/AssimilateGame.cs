@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,6 +27,7 @@ public class AssimilateGame : Screen, IMinigame
     private int _level;           // Current level (0-indexed)
     private int _points;          // Accumulated points
     private GameState _state = GameState.Playing;
+    private bool _restoredFromSave;  // True if restored from saved state
     
     // Stats for hub integration
     private GameStats _stats;
@@ -75,6 +77,12 @@ public class AssimilateGame : Screen, IMinigame
 
     /// <inheritdoc />
     public event Action<GameStats>? StatsChanged;
+    
+    /// <inheritdoc />
+    public event Action? ClearSaveState;
+    
+    /// <inheritdoc />
+    public bool SupportsSaveState => true;
 
     public AssimilateGame()
     {
@@ -89,11 +97,61 @@ public class AssimilateGame : Screen, IMinigame
     {
         _stats = stats;
     }
+    
+    /// <inheritdoc />
+    public object? GetSaveState()
+    {
+        // Only save if game is in progress
+        if (_state != GameState.Playing || _board == null)
+            return null;
+        
+        return new AssimilateSaveState
+        {
+            Level = _level,
+            Moves = _moves,
+            Points = _points,
+            BoardCells = _board.CloneCells()
+        };
+    }
+    
+    // JSON options must match SaveManager's options for proper deserialization
+    private static readonly JsonSerializerOptions SaveJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
+    /// <inheritdoc />
+    public void RestoreSaveState(JsonElement stateJson)
+    {
+        try
+        {
+            var saveState = stateJson.Deserialize<AssimilateSaveState>(SaveJsonOptions);
+            if (saveState?.BoardCells != null && saveState.BoardCells.Length > 0)
+            {
+                _level = saveState.Level;
+                _moves = saveState.Moves;
+                _points = saveState.Points;
+                _board = new Board(GridSize, GridSize, ColorCount);
+                _board.RestoreCells(saveState.BoardCells);
+                _state = GameState.Playing;
+                _restoredFromSave = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to restore Assimilate save state: {ex.Message}");
+        }
+    }
 
     public override void Initialize()
     {
         base.Initialize();
-        NewGame(0);
+        
+        // Only start new game if not restored from save
+        if (!_restoredFromSave)
+        {
+            NewGame(0);
+        }
     }
 
     public override void LoadContent(ContentManager content)
@@ -287,6 +345,7 @@ public class AssimilateGame : Screen, IMinigame
         }
         
         StatsChanged?.Invoke(_stats);
+        ClearSaveState?.Invoke();  // Clear saved state on completion
     }
 
     private void RecordLoss()
@@ -300,6 +359,7 @@ public class AssimilateGame : Screen, IMinigame
         }
         
         StatsChanged?.Invoke(_stats);
+        ClearSaveState?.Invoke();  // Clear saved state on completion
     }
 
     public override void Update(GameTime gameTime)
@@ -727,4 +787,15 @@ public class AssimilateGame : Screen, IMinigame
         Won,
         Lost
     }
+}
+
+/// <summary>
+/// Serializable save state for Assimilate game.
+/// </summary>
+public class AssimilateSaveState
+{
+    public int Level { get; set; }
+    public int Moves { get; set; }
+    public int Points { get; set; }
+    public int[][] BoardCells { get; set; } = Array.Empty<int[]>();
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using Zara_s_Basement.Core.Screens;
 
 namespace Zara_s_Basement.Core.Games;
@@ -33,4 +34,28 @@ public interface IMinigame : IScreen
     /// Event fired when stats change (win, new high score, etc.)
     /// </summary>
     event Action<GameStats>? StatsChanged;
+    
+    /// <summary>
+    /// Whether this game supports save/resume functionality.
+    /// Default implementation returns false.
+    /// </summary>
+    bool SupportsSaveState => false;
+    
+    /// <summary>
+    /// Get current game state for saving. Returns null if nothing to save.
+    /// Games should return a serializable object with their current state.
+    /// </summary>
+    object? GetSaveState() => null;
+    
+    /// <summary>
+    /// Restore game from previously saved state.
+    /// Called before Initialize() if there's saved state.
+    /// The JsonElement can be deserialized to the game's specific state type.
+    /// </summary>
+    void RestoreSaveState(JsonElement stateJson) { }
+    
+    /// <summary>
+    /// Clear saved state (called on game completion - win or lose).
+    /// </summary>
+    event Action? ClearSaveState;
 }
