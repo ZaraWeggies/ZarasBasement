@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 # Declare a constant variables
-readonly resources_base_path="../../Zara_s_Basement.Android/Resources"
+readonly resources_base_path="../../ZarasBasement.Android/Resources"
 readonly drawable_resources_path="$resources_base_path/drawable-"
 readonly mdpi="mdpi"
 readonly hdpi="hdpi"
