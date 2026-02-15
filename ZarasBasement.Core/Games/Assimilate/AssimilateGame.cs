@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Zara_s_Basement.Core.Input;
 using Zara_s_Basement.Core.Screens;
 using Zara_s_Basement.Core.UI;
+using Button = Zara_s_Basement.Core.UI.Button;
 
 namespace Zara_s_Basement.Core.Games.Assimilate;
 
@@ -19,7 +20,7 @@ public class AssimilateGame : Screen, IMinigame
     private const int BoardWidth = 14;
     private const int BoardHeight = 14;
     private const int ColorCount = 6;
-    private const int MaxMoves = 25;
+    private const int MaxMoves = 30;
     
     // Game state
     private Board? _board;
@@ -316,8 +317,8 @@ public class AssimilateGame : Screen, IMinigame
                 var cellRect = new Rectangle(
                     _boardRect.X + x * _cellSize,
                     _boardRect.Y + y * _cellSize,
-                    _cellSize - 1,
-                    _cellSize - 1
+                    _cellSize,
+                    _cellSize
                 );
                 
                 Color cellColor = _board.GetColor(x, y);
@@ -352,25 +353,24 @@ public class AssimilateGame : Screen, IMinigame
             var color = Board.Colors[i];
             var bounds = btn.Bounds;
             
-            // Draw button background (darker when it's current color)
             bool isCurrent = i == _board.CurrentColor;
             
-            // Border
-            int border = 3;
+            // Draw thin border
+            int border = 2;
             spriteBatch.Draw(_pixel, new Rectangle(
                 bounds.X - border, bounds.Y - border,
                 bounds.Width + border * 2, bounds.Height + border * 2
-            ), isCurrent ? Color.White : Color.Gray);
+            ), isCurrent ? Color.White : new Color(60, 60, 70));
             
-            // Fill with color
-            var displayColor = _state == GameState.Playing && !isCurrent ? color : color * 0.5f;
+            // Fill with solid color (dimmed if current)
+            var displayColor = isCurrent ? color : color;
             spriteBatch.Draw(_pixel, bounds, displayColor);
             
-            // Hover effect
-            if (btn.IsHovered && _state == GameState.Playing && !isCurrent)
-            {
-                spriteBatch.Draw(_pixel, bounds, Color.White * 0.2f);
-            }
+            // Hover effect - slight brighten
+            // if (btn.IsHovered && _state == GameState.Playing && !isCurrent)
+            // {
+            //     spriteBatch.Draw(_pixel, bounds, Color.White * 0.15f);
+            // }
         }
     }
 

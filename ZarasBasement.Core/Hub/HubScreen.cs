@@ -30,7 +30,7 @@ public class HubScreen : Screen
     private static readonly Color CeilingColor = new(35, 30, 35);
     
     // Title
-    private const string Title = "ZARA'S BASEMENT";
+    private const string Title = "Zara's Basement";
     private float _titlePulse;
 
     public HubScreen(ScreenManager screenManager, SaveManager saveManager)
@@ -64,8 +64,8 @@ public class HubScreen : Screen
         int floorY = (int)(viewport.Height * 0.7f);
         
         // Create a station for each registered game
-        int stationWidth = 100;
-        int stationHeight = 140;
+        int stationWidth = 200;
+        int stationHeight = 350;
         int spacing = 30;
         
         var gameIds = new List<string>(GameRegistry.GameIds);

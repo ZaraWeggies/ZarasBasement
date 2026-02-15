@@ -48,12 +48,13 @@ public class Button
     /// </summary>
     public event Action? Clicked;
 
-    // 90s Windows-style colors
-    private static readonly Color ButtonFace = new(192, 192, 192);
-    private static readonly Color ButtonHighlight = new(255, 255, 255);
-    private static readonly Color ButtonShadow = new(128, 128, 128);
-    private static readonly Color ButtonDarkShadow = new(64, 64, 64);
-    private static readonly Color ButtonText = new(0, 0, 0);
+    // Flat modern colors
+    private static readonly Color ButtonNormal = new(80, 80, 100);
+    private static readonly Color ButtonHover = new(100, 100, 130);
+    private static readonly Color ButtonPressed = new(60, 60, 80);
+    private static readonly Color ButtonDisabled = new(60, 60, 70);
+    private static readonly Color ButtonBorder = new(120, 120, 150);
+    private static readonly Color ButtonText = new(255, 255, 255);
     private static readonly Color ButtonTextDisabled = new(128, 128, 128);
 
     public Button() { }
@@ -97,28 +98,28 @@ public class Button
 
     public void Draw(SpriteBatch spriteBatch, Texture2D pixel, SpriteFont? font = null)
     {
-        // Draw beveled border (90s Windows style)
-        int bevel = 2;
-        
-        if (_isPressed && _isHovered)
-        {
-            // Pressed state - inverted bevel
-            DrawBevel(spriteBatch, pixel, ButtonDarkShadow, ButtonShadow, ButtonHighlight, ButtonHighlight, bevel);
-        }
+        // Determine button color based on state
+        Color bgColor;
+        if (!Enabled)
+            bgColor = ButtonDisabled;
+        else if (_isPressed && _isHovered)
+            bgColor = ButtonPressed;
+        else if (_isHovered)
+            bgColor = ButtonHover;
         else
-        {
-            // Normal state
-            DrawBevel(spriteBatch, pixel, ButtonHighlight, ButtonHighlight, ButtonDarkShadow, ButtonShadow, bevel);
-        }
+            bgColor = ButtonNormal;
 
-        // Draw face
-        var faceRect = new Rectangle(
-            _bounds.X + bevel,
-            _bounds.Y + bevel,
-            _bounds.Width - bevel * 2,
-            _bounds.Height - bevel * 2
+        // Draw border
+        spriteBatch.Draw(pixel, _bounds, ButtonBorder);
+        
+        // Draw fill (inset by 2 pixels)
+        var innerRect = new Rectangle(
+            _bounds.X + 2,
+            _bounds.Y + 2,
+            _bounds.Width - 4,
+            _bounds.Height - 4
         );
-        spriteBatch.Draw(pixel, faceRect, Enabled ? ButtonFace : new Color(212, 212, 212));
+        spriteBatch.Draw(pixel, innerRect, bgColor);
 
         // Draw text
         if (font != null && !string.IsNullOrEmpty(Text))
@@ -129,37 +130,7 @@ public class Button
                 _bounds.Y + (_bounds.Height - textSize.Y) / 2
             );
 
-            // Offset text when pressed
-            if (_isPressed && _isHovered)
-            {
-                textPos += new Vector2(1, 1);
-            }
-
             spriteBatch.DrawString(font, Text, textPos, Enabled ? ButtonText : ButtonTextDisabled);
         }
-    }
-
-    private void DrawBevel(SpriteBatch spriteBatch, Texture2D pixel,
-        Color topOuter, Color topInner, Color bottomOuter, Color bottomInner, int size)
-    {
-        // Top edge (outer)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X, _bounds.Y, _bounds.Width, 1), topOuter);
-        // Left edge (outer)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X, _bounds.Y, 1, _bounds.Height), topOuter);
-        
-        // Top edge (inner)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X + 1, _bounds.Y + 1, _bounds.Width - 2, 1), topInner);
-        // Left edge (inner)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X + 1, _bounds.Y + 1, 1, _bounds.Height - 2), topInner);
-
-        // Bottom edge (outer)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X, _bounds.Bottom - 1, _bounds.Width, 1), bottomOuter);
-        // Right edge (outer)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.Right - 1, _bounds.Y, 1, _bounds.Height), bottomOuter);
-
-        // Bottom edge (inner)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.X + 1, _bounds.Bottom - 2, _bounds.Width - 2, 1), bottomInner);
-        // Right edge (inner)
-        spriteBatch.Draw(pixel, new Rectangle(_bounds.Right - 2, _bounds.Y + 1, 1, _bounds.Height - 2), bottomInner);
     }
 }

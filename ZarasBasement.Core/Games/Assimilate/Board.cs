@@ -34,12 +34,12 @@ public class Board
     /// </summary>
     public static readonly Color[] Colors = new[]
     {
-        new Color(231, 76, 60),   // Red
-        new Color(46, 204, 113),  // Green
-        new Color(52, 152, 219),  // Blue
-        new Color(241, 196, 15),  // Yellow
-        new Color(155, 89, 182),  // Purple
-        new Color(230, 126, 34),  // Orange
+        new Color(255, 0, 0),      // Red
+        new Color(102, 204, 0),    // Green
+        new Color(34, 51, 244),    // Blue
+        new Color(255, 204, 0),    // Yellow
+        new Color(187, 119, 255),  // Purple
+        new Color(255, 255, 255),  // White
     };
 
     /// <summary>
