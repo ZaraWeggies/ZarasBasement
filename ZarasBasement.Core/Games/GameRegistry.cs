@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Zara_s_Basement.Core.Games;
+namespace ZarasBasement.Core.Games;
 
 /// <summary>
 /// Registry of all available mini-games.

@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Zara_s_Basement.Core.UI;
+namespace ZarasBasement.Core.UI;
 
 /// <summary>
 /// Centralized layout helper for responsive UI across portrait/landscape and mobile/desktop.
@@ -25,12 +25,12 @@ public static class LayoutHelper
     /// <summary>
     /// Whether running on a mobile platform (Android/iOS).
     /// </summary>
-    public static bool IsMobile => Zara_s_BasementGame.IsMobile;
+    public static bool IsMobile => ZarasBasementGame.IsMobile;
     
     /// <summary>
     /// Whether running on desktop (Windows/macOS/Linux).
     /// </summary>
-    public static bool IsDesktop => Zara_s_BasementGame.IsDesktop;
+    public static bool IsDesktop => ZarasBasementGame.IsDesktop;
     
     /// <summary>
     /// Current viewport width.

@@ -1,4 +1,4 @@
-﻿using Zara_s_Basement.Core;
+﻿using ZarasBasement.Core;
 
 internal class Program
 {
@@ -9,7 +9,7 @@ internal class Program
     /// <param name="args">Command-line arguments passed to the application.</param>
     private static void Main(string[] args)
     {
-        using var game = new Zara_s_BasementGame();
+        using var game = new ZarasBasementGame();
         game.Run();
     }
 }

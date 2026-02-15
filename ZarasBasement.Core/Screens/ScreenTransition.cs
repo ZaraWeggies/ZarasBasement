@@ -1,4 +1,4 @@
-namespace Zara_s_Basement.Core.Screens;
+namespace ZarasBasement.Core.Screens;
 
 /// <summary>
 /// Types of transitions between screens.

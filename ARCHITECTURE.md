@@ -74,7 +74,7 @@ ZarasBasement/
 
 1. Create folder in `Games/YourGame/`
 2. Implement `IMinigame` interface
-3. Register in `Zara's BasementGame.RegisterGames()`:
+3. Register in `ZarasBasementGame.RegisterGames()`:
 
 ```csharp
 var info = new GameInfo
@@ -132,3 +132,12 @@ dotnet test
 - **Desktop**: 1280×720 window, mouse input
 - **Mobile**: Full screen, touch input, virtual gamepad support planned
 - **Persistence**: `~/.local/share/ZarasBasement/save.json` (varies by platform)
+
+## Naming Conventions
+
+| Context | Convention | Example |
+|---------|------------|---------|
+| Display name (UI, stores) | "Zara's Basement" | Window title, app name |
+| Folders & projects | `ZarasBasement.*` | `ZarasBasement.Core/` |
+| Namespaces & classes | `ZarasBasement.*` | `namespace ZarasBasement.Core` |
+| Package ID | `com.zarasbasement` | Android manifest |

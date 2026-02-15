@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Zara_s_Basement.Core.Input;
+using ZarasBasement.Core.Input;
 
-namespace Zara_s_Basement.Core.UI;
+namespace ZarasBasement.Core.UI;
 
 /// <summary>
 /// A clickable button with 90s-style beveled appearance.

@@ -1,13 +1,13 @@
-﻿using Zara_s_Basement.Core;
+﻿using ZarasBasement.Core;
 using Foundation;
 using UIKit;
 
-namespace Zara_s_Basement.iOS
+namespace ZarasBasement.iOS
 {
     [Register("AppDelegate")]
     internal class Program : UIApplicationDelegate
     {
-        private static Zara_s_BasementGame _game;
+        private static ZarasBasementGame _game;
 
         /// <summary>
         /// Initializes and starts the game by creating an instance of the 
@@ -15,7 +15,7 @@ namespace Zara_s_Basement.iOS
         /// </summary>
         internal static void RunGame()
         {
-            _game = new Zara_s_BasementGame();
+            _game = new ZarasBasementGame();
             _game.Run();
         }
 

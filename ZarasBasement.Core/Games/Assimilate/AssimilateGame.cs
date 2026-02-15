@@ -3,11 +3,11 @@ using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Zara_s_Basement.Core.Input;
-using Zara_s_Basement.Core.Screens;
-using Zara_s_Basement.Core.UI;
+using ZarasBasement.Core.Input;
+using ZarasBasement.Core.Screens;
+using ZarasBasement.Core.UI;
 
-namespace Zara_s_Basement.Core.Games.Assimilate;
+namespace ZarasBasement.Core.Games.Assimilate;
 
 /// <summary>
 /// Assimilate! - A flood-it / drench style puzzle game.

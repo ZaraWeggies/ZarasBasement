@@ -1,23 +1,23 @@
 using System;
-using Zara_s_Basement.Core.Localization;
+using ZarasBasement.Core.Localization;
 using System.Collections.Generic;
 using System.Globalization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Zara_s_Basement.Core.Games;
-using Zara_s_Basement.Core.Games.Assimilate;
-using Zara_s_Basement.Core.Hub;
-using Zara_s_Basement.Core.Screens;
-using Zara_s_Basement.Core.Services;
+using ZarasBasement.Core.Games;
+using ZarasBasement.Core.Games.Assimilate;
+using ZarasBasement.Core.Hub;
+using ZarasBasement.Core.Screens;
+using ZarasBasement.Core.Services;
 
-namespace Zara_s_Basement.Core
+namespace ZarasBasement.Core
 {
     /// <summary>
     /// The main class for the game, responsible for managing game components, settings, 
     /// and platform-specific configurations.
     /// </summary>
-    public class Zara_s_BasementGame : Game
+    public class ZarasBasementGame : Game
     {
         // Resources for drawing.
         private GraphicsDeviceManager graphicsDeviceManager;
@@ -42,7 +42,7 @@ namespace Zara_s_Basement.Core
         /// initializes services like settings and leaderboard managers, and sets up the 
         /// screen manager for screen transitions.
         /// </summary>
-        public Zara_s_BasementGame()
+        public ZarasBasementGame()
         {
             graphicsDeviceManager = new GraphicsDeviceManager(this);
 
@@ -52,7 +52,19 @@ namespace Zara_s_Basement.Core
             Content.RootDirectory = "Content";
 
             // Configure screen orientations.
-            graphicsDeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            if (IsMobile)
+            {
+                graphicsDeviceManager.SupportedOrientations = 
+                    DisplayOrientation.Portrait | 
+                    DisplayOrientation.LandscapeLeft | 
+                    DisplayOrientation.LandscapeRight;
+            }
+            else
+            {
+                graphicsDeviceManager.SupportedOrientations = 
+                    DisplayOrientation.LandscapeLeft | 
+                    DisplayOrientation.LandscapeRight;
+            }
         }
 
         /// <summary>
@@ -83,6 +95,9 @@ namespace Zara_s_Basement.Core
                 graphicsDeviceManager.PreferredBackBufferHeight = 720;
                 graphicsDeviceManager.ApplyChanges();
                 IsMouseVisible = true;
+                
+                // Set window title
+                Window.Title = "Zara's Basement";
             }
         }
 

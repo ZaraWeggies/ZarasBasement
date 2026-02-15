@@ -1,9 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Zara_s_Basement.Core.Games;
-using Zara_s_Basement.Core.Input;
+using ZarasBasement.Core.Games;
+using ZarasBasement.Core.Input;
 
-namespace Zara_s_Basement.Core.Hub;
+namespace ZarasBasement.Core.Hub;
 
 /// <summary>
 /// A clickable game station in the hub (arcade cabinet, poster, etc.)

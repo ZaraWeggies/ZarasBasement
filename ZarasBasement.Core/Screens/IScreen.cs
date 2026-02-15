@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Zara_s_Basement.Core.Screens;
+namespace ZarasBasement.Core.Screens;
 
 /// <summary>
 /// Interface for all game screens (hub, games, menus, etc.)

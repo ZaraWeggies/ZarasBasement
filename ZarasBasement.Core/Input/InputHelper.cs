@@ -2,7 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 
-namespace Zara_s_Basement.Core.Input;
+namespace ZarasBasement.Core.Input;
 
 /// <summary>
 /// Unified input handling for mouse and touch.

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Zara_s_Basement.Core.Screens;
+namespace ZarasBasement.Core.Screens;
 
 /// <summary>
 /// Manages a stack of screens and handles transitions between them.

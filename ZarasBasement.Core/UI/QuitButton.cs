@@ -2,7 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Zara_s_Basement.Core.UI;
+namespace ZarasBasement.Core.UI;
 
 /// <summary>
 /// 90s-style quit button that appears in all mini-games.

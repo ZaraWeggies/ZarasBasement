@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace Zara_s_Basement.Core.Games.Assimilate;
+namespace ZarasBasement.Core.Games.Assimilate;
 
 /// <summary>
 /// The game board for Assimilate! (flood-it style game).

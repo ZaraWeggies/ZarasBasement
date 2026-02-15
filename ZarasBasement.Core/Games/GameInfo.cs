@@ -1,4 +1,4 @@
-namespace Zara_s_Basement.Core.Games;
+namespace ZarasBasement.Core.Games;
 
 /// <summary>
 /// Metadata about a mini-game displayed in the hub.

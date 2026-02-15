@@ -6,10 +6,10 @@ using Android.Util;
 
 using Microsoft.Xna.Framework;
 
-using Zara_s_Basement.Core;
+using ZarasBasement.Core;
 using System;
 
-namespace Zara_s_Basement.Android
+namespace ZarasBasement.Android
 {
     /// <summary>
     /// The main activity for the Android application. It initializes the game instance,
@@ -20,7 +20,7 @@ namespace Zara_s_Basement.Android
     /// with the MonoGame framework.
     /// </remarks>
     [Activity(
-        Label = "Zara_s_Basement",
+        Label = "ZarasBasement",
         MainLauncher = true,
         Icon = "@drawable/icon",
         Theme = "@style/Theme.Splash",
@@ -32,7 +32,7 @@ namespace Zara_s_Basement.Android
     public class MainActivity : AndroidGameActivity
     {
         private const string TAG = "ZarasBasement";
-        private Zara_s_BasementGame _game;
+        private ZarasBasementGame _game;
         private View _view;
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace Zara_s_Basement.Android
             {
                 Log.Info(TAG, "OnCreate started");
                 
-                _game = new Zara_s_BasementGame();
+                _game = new ZarasBasementGame();
                 Log.Info(TAG, "Game instance created");
                 
                 _view = _game.Services.GetService(typeof(View)) as View;

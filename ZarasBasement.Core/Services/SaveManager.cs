@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Zara_s_Basement.Core.Games;
+using ZarasBasement.Core.Games;
 
-namespace Zara_s_Basement.Core.Services;
+namespace ZarasBasement.Core.Services;
 
 /// <summary>
 /// Manages saving and loading game statistics and game state.

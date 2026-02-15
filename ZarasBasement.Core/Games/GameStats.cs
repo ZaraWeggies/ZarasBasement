@@ -1,6 +1,6 @@
 using System;
 
-namespace Zara_s_Basement.Core.Games;
+namespace ZarasBasement.Core.Games;
 
 /// <summary>
 /// Statistics for a mini-game that persist across sessions.

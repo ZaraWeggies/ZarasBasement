@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Zara_s_Basement.Core.Games;
-using Zara_s_Basement.Core.Input;
-using Zara_s_Basement.Core.Screens;using Zara_s_Basement.Core.UI;using Zara_s_Basement.Core.Services;
+using ZarasBasement.Core.Games;
+using ZarasBasement.Core.Input;
+using ZarasBasement.Core.Screens;using ZarasBasement.Core.UI;using ZarasBasement.Core.Services;
 
-namespace Zara_s_Basement.Core.Hub;
+namespace ZarasBasement.Core.Hub;
 
 /// <summary>
 /// The main hub screen - a basement environment with clickable game stations.

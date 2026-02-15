@@ -1,9 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Zara_s_Basement.Core.UI;
+using ZarasBasement.Core.UI;
 
-namespace Zara_s_Basement.Core.Screens;
+namespace ZarasBasement.Core.Screens;
 
 /// <summary>
 /// Base class for screens with sensible defaults.

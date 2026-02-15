@@ -1,8 +1,8 @@
 using System;
 using System.Text.Json;
-using Zara_s_Basement.Core.Screens;
+using ZarasBasement.Core.Screens;
 
-namespace Zara_s_Basement.Core.Games;
+namespace ZarasBasement.Core.Games;
 
 /// <summary>
 /// Interface for mini-games in the hub.
