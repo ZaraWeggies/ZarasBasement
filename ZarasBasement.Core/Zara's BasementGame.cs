@@ -95,6 +95,9 @@ namespace Zara_s_Basement.Core
                 graphicsDeviceManager.PreferredBackBufferHeight = 720;
                 graphicsDeviceManager.ApplyChanges();
                 IsMouseVisible = true;
+                
+                // Set window title
+                Window.Title = "Zara's Basement";
             }
         }
 
