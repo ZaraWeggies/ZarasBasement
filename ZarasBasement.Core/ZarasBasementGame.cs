@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using ZarasBasement.Core.Games;
 using ZarasBasement.Core.Games.Assimilate;
+using ZarasBasement.Core.Games.Pinball;
 using ZarasBasement.Core.Hub;
 using ZarasBasement.Core.Screens;
 using ZarasBasement.Core.Services;
@@ -143,20 +144,20 @@ namespace ZarasBasement.Core
             };
             GameRegistry.Register(assimilateInfo, () => new AssimilateGame());
             
-            // FAKE
-            // var fakeInfo = new GameInfo
-            // {
-            //     Id = "fake",
-            //     Title = "Fake Game",
-            //     Description = "This is a fake game for testing purposes.",
-            //     ThumbnailPath = "Games/Assimilate/thumbnail",
-            //     Difficulty = 2,
-            //     EstimatedMinutes = 3,
-            //     Tags = new[] { "Puzzle", "Strategy" }
-            // };
-            // GameRegistry.Register(fakeInfo, () => new AssimilateGame());
+            // Pinball
+            var pinballInfo = new GameInfo
+            {
+                Id = "pinball",
+                Title = "Pinball",
+                Description = "Classic pinball game.",
+                ThumbnailPath = "Games/Pinball/thumbnail",
+                Difficulty = 2,
+                EstimatedMinutes = 5,
+                Tags = new[] { "Puzzle", "Strategy" }
+            };
+            GameRegistry.Register(pinballInfo, () => new PinballGame());
             
-            // // FAKE
+            // FAKE
             // var fake2Info = new GameInfo
             // {
             //     Id = "fake2",
